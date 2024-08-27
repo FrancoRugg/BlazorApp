@@ -1,0 +1,67 @@
+﻿@page "/delete";
+@using System.ComponentModel.DataAnnotations;
+@using System.Text.Json;
+@using global::BlazorServices.Models;
+@using global::BlazorServices.Repositories;
+@inject NavigationManager navigationManager;
+@inject UserEntityRepository userEntityRepository ;
+
+<PageTitle>Crear Usuarios</PageTitle>
+@* 
+@using BlazorServices.Services;
+@using BlazorServices.Models; *@
+
+
+<h1>Users Entity Delete</h1> 
+
+<p>Está seguro de eliminar el usuario: @usuario?</p>
+
+<button class="btn btn-primary btn-sm" @onclick="()=>DeleteUser()">Eliminar Usuario</button>
+<br />
+
+@if (!string.IsNullOrEmpty(okMessage))
+{
+    @okMessage
+    ;
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    @errorMessage
+    ;
+}
+
+@code {
+
+    private string errorMessage = string.Empty;
+    private string okMessage = string.Empty;
+    private int id = 0;
+    private string usuario = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = new Uri(navigationManager.Uri);
+        var query = uri.Query.TrimStart('?');//Captura de la url todo lo que tenga delante de un signo de preguntas
+
+        var queryParams = System.Web.HttpUtility.ParseQueryString(query);
+
+        usuario = queryParams["user"];
+        id = int.Parse(queryParams["id"]);
+    }
+
+    private async Task DeleteUser()
+    {
+        var res = await userEntityRepository.DeleteUser(id);
+
+        if (res)
+        {
+            okMessage = "Usuario eliminado correctamente!";
+            errorMessage = string.Empty;
+        }else
+        {
+
+            errorMessage = "Error al eliminar el usuario!";
+            okMessage = string.Empty;
+        }
+        StateHasChanged();
+    } 
+}

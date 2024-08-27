@@ -1,0 +1,48 @@
+﻿@page "/albums";
+
+<PageTitle>Albums</PageTitle>
+
+@using BlazorServices.Services;
+@using BlazorServices.Models;
+@inject PostService albumService;
+
+
+<h1>AlbumList</h1> 
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (AlbumList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>userId</th>
+                <th>id</th>
+                <th>title</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var album in AlbumList)
+            {
+                <tr>
+                    <td>@album.userId</td>
+                    <td>@album.id</td>
+                    <td>@album.title</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorServices.Models.Albums>? AlbumList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AlbumList = await albumService.getAlbumList();
+    }
+}

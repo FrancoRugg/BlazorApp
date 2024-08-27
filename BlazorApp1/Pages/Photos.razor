@@ -1,0 +1,52 @@
+﻿@page "/photos";
+
+<PageTitle>Todos</PageTitle>
+
+@using BlazorServices.Services;
+@using BlazorServices.Models;
+@inject PhotoService photoService;
+
+
+<h1>PhotosList</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (PhotosList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>albumId</th>
+                <th>id</th>
+                <th>title</th>
+                <th>url</th>
+                <th>thumbnailUrl</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var photo in PhotosList)
+            {
+                <tr>
+                    <td>@photo.albumId</td>
+                    <td>@photo.id</td>
+                    <td>@photo.title</td>
+                    <td>@photo.url</td>
+                    <td>@photo.thumbnailUrl</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorServices.Models.Photos>? PhotosList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        PhotosList = await photoService.getPhotoList();
+    }
+}

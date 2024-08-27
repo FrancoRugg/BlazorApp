@@ -1,0 +1,92 @@
+﻿@page "/usersEntity";
+
+<PageTitle>UsersEntity</PageTitle>
+
+@using BlazorServices.Repositories;
+@using BlazorServices.Services;
+@using BlazorServices.Models;
+@using System.Text.Json;
+@inject NavigationManager navigationManager;
+@inject UserEntityRepository userEntityRepository ;
+
+
+<h1>UsersEntity</h1>
+<a href="create" class="btn btn-primary btn-sm" /a>Crear Usuario</a>
+@* <label>User</label>
+<input type="text" @bind="@userEntity.Usuario"/>
+
+<label>Clave</label>
+<input type="text" @bind="@userEntity.Clave"/>
+
+<label>Rol</label>
+<input type="text" @bind="@userEntity.Rol"/>
+
+<label>Estado</label>
+<input type="text" @bind="@userEntity.Estado"/>
+
+<button @onclick="PostUser">Crear Usuario</button> *@
+
+
+<p>La página en la qeu se encuentra situado utiliza Entoty Framework.</p>
+
+
+@if (UserList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Editar</th>
+                <th>Id</th>
+                <th>Usuario</th>
+                <th>Clave</th>
+                <th>Rol</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in UserList)
+            {
+                <tr>
+                    <td><button class="btn btn-primary btn-sm" @onclick="()=>EliminarUser(user)">Eliminar</button></td>
+                    <td>@user.Id</td>
+                    <td>@user.Usuario</td>
+                    <td>@user.Clave</td>
+                    <td>@user.Rol</td>
+                    <td>@user.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorServices.Models.UsersEntityModel> UserList;
+    private UsersEntityModel userEntity = new UsersEntityModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await userEntityRepository.GetUserList();
+
+        UserList = res.Value;
+    }
+    private void EliminarUser(UsersEntityModel userEntity)
+    {
+        string user = JsonSerializer.Serialize(userEntity);
+
+        navigationManager.NavigateTo($"/delete?user={userEntity.Usuario}&id={userEntity.Id}");
+
+
+
+    }
+    // private UsersEntityModel userEntity = new UsersEntityModel();
+    // private async Task PostUser()
+    // {
+    //     var res = await userEntityRepository.PostUser(userEntity);
+    //     OnInitializedAsync();//Refresh
+
+    // }
+}

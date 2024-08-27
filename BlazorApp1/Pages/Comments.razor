@@ -1,0 +1,52 @@
+﻿@page "/comments";
+
+<PageTitle>Albums</PageTitle>
+
+@using BlazorServices.Services;
+@using BlazorServices.Models;
+@inject CommentService commentService;
+
+
+<h1>AlbumList</h1> 
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (commentList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>postId</th>
+                <th>id</th>
+                <th>name</th>
+                <th>email</th>
+                <th>body</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var comment in commentList)
+            {
+                <tr>
+                    <td>@comment.postId</td>
+                    <td>@comment.id</td>
+                    <td>@comment.name</td>
+                    <td>@comment.email</td>
+                    <td>@comment.body</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorServices.Models.Comments>? commentList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        commentList = await commentService.getCommentList();
+    }
+}

@@ -1,0 +1,50 @@
+﻿@page "/users";
+
+<PageTitle>Users</PageTitle>
+
+@using BlazorServices.Services;
+@using BlazorServices.Models;
+@inject UserService userService;
+
+
+<h1>Users</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (UserList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>User Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in UserList)
+            {
+                <tr>
+                    <td>@user.id</td>
+                    <td>@user.name</td>
+                    <td>@user.username</td>
+                    <td>@user.email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorServices.Models.Users>? UserList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserList = await userService.getUsersList();
+    }
+}

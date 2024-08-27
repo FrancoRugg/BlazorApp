@@ -1,0 +1,50 @@
+﻿@page "/posts";
+
+<PageTitle>Posts</PageTitle>
+
+@using BlazorServices.Services;
+@using BlazorServices.Models;
+@inject PostsService postService;
+
+
+<h1>Posts</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (PostList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>UserId</th>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Body</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in PostList)
+            {
+                <tr>
+                    <td>@todo.userId</td>
+                    <td>@todo.id</td>
+                    <td>@todo.title</td>
+                    <td>@todo.body</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorServices.Models.Posts>? PostList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        PostList = await postService.getPostList();
+    }
+}

@@ -1,0 +1,89 @@
+﻿@page "/create";
+@using System.ComponentModel.DataAnnotations;
+@using System.Text.Json;
+@using global::BlazorServices.Models;
+@using global::BlazorServices.Repositories;
+@inject NavigationManager navigationManager;
+@inject UserEntityRepository userEntityRepository ;
+
+<PageTitle>Crear Usuarios</PageTitle>
+@* 
+@using BlazorServices.Services;
+@using BlazorServices.Models; *@
+
+
+<h1>Users Entity Create</h1> 
+
+<div >
+    <div>
+        <label>User</label>
+        <input type="text" @bind="@userEntity.Usuario" />
+    </div>
+
+    <div>
+        <label>Clave</label>
+        <input type="text" @bind="@userEntity.Clave" />
+    </div>
+
+    <div>
+        <label>Rol</label>
+        <input type="text" @bind="@userEntity.Rol" />
+    </div>
+    <div>
+        <label>Estado</label>
+        <input type="text" @bind="@userEntity.Estado" />
+    </div>
+</div>
+<div>
+
+</div>
+
+
+
+<button class="btn btn-primary btn-sm" @onclick="PostUser">Crear Usuario</button>
+
+@if (!string.IsNullOrEmpty(okMessage))
+{
+    @okMessage
+    ;
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    @errorMessage;
+}
+
+@code {
+    private UsersEntityModel userEntity = new UsersEntityModel();
+    private string errorMessage = string.Empty;
+    private string okMessage = string.Empty;
+
+    private async Task PostUser()
+    {
+
+        if (
+            string.IsNullOrEmpty(userEntity.Usuario)||
+            string.IsNullOrEmpty(userEntity.Clave)||
+            string.IsNullOrEmpty(userEntity.Rol)||
+            string.IsNullOrEmpty(userEntity.Estado)
+        )
+        {
+            errorMessage = "Todos los campos son obligatorios";
+            StateHasChanged();
+            return;
+        }
+        var res = await userEntityRepository.PostUser(userEntity);
+
+        if (res)
+        {
+            okMessage = "Usuario creado correctamente!";
+            errorMessage = string.Empty;
+        }else
+        {
+            okMessage = string.Empty;
+            errorMessage = "Ocurrió un problema al crear el usuari.";
+        }
+        OnInitializedAsync();//Refresh
+
+    }
+    
+}

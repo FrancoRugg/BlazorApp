@@ -1,0 +1,50 @@
+﻿@page "/todos";
+
+<PageTitle>Todos</PageTitle>
+
+@using BlazorServices.Services;
+@using BlazorServices.Models;
+@inject TodoService todoService;
+
+
+<h1>Todos</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (TodosList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>UserId</th>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in TodosList)
+            {
+                <tr>
+                    <td>@todo.userId</td>
+                    <td>@todo.id</td>
+                    <td>@todo.title</td>
+                    <td>@todo.completed</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorServices.Models.Todos>? TodosList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        TodosList = await todoService.getTodosList();
+    }
+}
